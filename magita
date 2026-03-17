@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>勾玉回転サイト</title>
+<style>
+    body {
+        margin: 0;
+        overflow: hidden;
+        background: black;
+        color: white;
+        font-family: sans-serif;
+    }
+    #text {
+        position: absolute;
+        top: 20px;
+        width: 100%;
+        text-align: center;
+        font-size: 30px;
+    }
+</style>
+</head>
+<body>
+
+<div id="text">（・▽・ｐ）</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<script>
+let scene = new THREE.Scene();
+let camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+
+let renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+// ライト
+let light = new THREE.PointLight(0xffffff, 1);
+light.position.set(5,5,5);
+scene.add(light);
+
+// 勾玉っぽい形（球＋少し変形）
+let geometry = new THREE.SphereGeometry(1, 64, 64);
+
+// ちょっと勾玉っぽく変形
+geometry.scale(1, 1.3, 0.7);
+
+let material = new THREE.MeshStandardMaterial({color: 0x00ffcc});
+let magatama = new THREE.Mesh(geometry, material);
+scene.add(magatama);
+
+camera.position.z = 3;
+
+// キー入力
+let rotateX = 0;
+let rotateY = 0;
+
+document.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowUp") rotateX -= 0.1;
+    if (e.key === "ArrowDown") rotateX += 0.1;
+    if (e.key === "ArrowLeft") rotateY -= 0.1;
+    if (e.key === "ArrowRight") rotateY += 0.1;
+});
+
+// アニメーション
+function animate() {
+    requestAnimationFrame(animate);
+
+    magatama.rotation.x = rotateX;
+    magatama.rotation.y = rotateY;
+
+    renderer.render(scene, camera);
+}
+animate();
+
+// 画面サイズ対応
+window.addEventListener("resize", () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+});
+</script>
+
+</body>
+</html>
